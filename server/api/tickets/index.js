@@ -2,12 +2,9 @@
 
 var express = require('express');
 var router = express.Router();
-var controller = require('./muffin.controller');
+var controller = require('./ticket.controller');
 
-router.get('/', controller.index);
-router.get('/:id', controller.show);
-
-router.post('/', controller.create);
+router.post('/createticket', controller.create);
 
 router.put('/:id', controller.update);
 

@@ -9,7 +9,6 @@ module.exports = function (app) {
   // app.use('/api/v1/users', require('./api/user'));
 
   // Auth
-  app.use('/auth', require('./auth'));
 
   app.route('/:url(api|app|bower_components|assets)/*')
     .get(function (req, res) {

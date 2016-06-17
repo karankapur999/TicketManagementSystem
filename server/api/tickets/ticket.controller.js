@@ -1,18 +1,16 @@
 'use strict';
 
 var _ = require('lodash');
-var Muffin = require('./muffin.model');
+var Ticket = require('./ticket.model'); //Model for Tickets
 
 function handleError (res, err) {
-  return res.status(500).send(err);
+  return res.status(500).send({ 'is_error': true,
+                                'status_code':500,
+                                'err': err
+                              });
 }
 
-/**
- * Get list of Muffin
- *
- * @param req
- * @param res
- */
+
 exports.index = function (req, res) {
   Muffin.find(function (err, muffins) {
     if (err) { return handleError(res, err); }
@@ -20,12 +18,7 @@ exports.index = function (req, res) {
   });
 };
 
-/**
- * Get a single Muffin
- *
- * @param req
- * @param res
- */
+
 exports.show = function (req, res) {
   Muffin.findById(req.params.id, function (err, muffin) {
     if (err) { return handleError(res, err); }
@@ -34,25 +27,16 @@ exports.show = function (req, res) {
   });
 };
 
-/**
- * Creates a new Muffin in the DB.
- *
- * @param req
- * @param res
- */
 exports.create = function (req, res) {
-  Muffin.create(req.body, function (err, muffin) {
+  console.log('This is body', req.body)
+  if ( !req.body.abc )  return handleError(res, 'Ticket Parameters missing');
+  Ticket.create(req.body, function (err, muffin) {
     if (err) { return handleError(res, err); }
     return res.status(201).json(muffin);
   });
 };
 
-/**
- * Updates an existing Muffin in the DB.
- *
- * @param req
- * @param res
- */
+
 exports.update = function (req, res) {
   if (req.body._id) { delete req.body._id; }
   Muffin.findById(req.params.id, function (err, muffin) {
@@ -66,12 +50,7 @@ exports.update = function (req, res) {
   });
 };
 
-/**
- * Deletes a Muffin from the DB.
- *
- * @param req
- * @param res
- */
+
 exports.destroy = function (req, res) {
   Muffin.findById(req.params.id, function (err, muffin) {
     if (err) { return handleError(res, err); }
