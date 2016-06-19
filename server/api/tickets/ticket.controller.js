@@ -1,23 +1,27 @@
-'use strict';
+  'use strict';
 
 var _ = require('lodash');
 var Error = require('../../error');
-var Errors = Error.errors;
 var httpResponse = require('../../responses');
+var TicketDM = require('./../../dbAdapters/dbManipulationLayer').tickets; //dm for tickets
+
 
 
 
 exports.createTicket = function (req, res) {
+  console.log('this is Errors', Error)
 
-  if ( !req.body.ticket_subject )  return handleError(res, 'Ticket ticket_subject Parameters missing');
-  if ( !req.body.ticket_description )  return handleError(res, 'Ticket ticket_description Parameters missing');
-  if ( !req.body.ticket_agent_email )  return handleError(res, 'Ticket ticket_agent_email Parameters missing');
-  req.body.ticket_created_by =   user_email;
+  var user_email = /*req.user.email ||*/ "Server"; // can be commented if we have users in DB
+
+  if ( !req.body.ticket_subject )  return Error.errorMissingParam(res, 'ticket_subject');
+  if ( !req.body.ticket_description )  return Error.errorMissingParam(res, 'ticket_description');
+  if ( !req.body.ticket_agent_email )  return Error.errorMissingParam(res, 'ticket_agent_email');
+  req.body.ticket_created_by =   user_email ;
   TicketDM.saveTickets(req.body).then(function(ticketObject) {
     return httpResponse.successResponse(res, ticketObject);
   })
   .catch(function(error) {
-      return Errors.errorDB(res, error);
+      return Error.errorDB(res, error);
     })
 
 };
@@ -25,12 +29,12 @@ exports.createTicket = function (req, res) {
 
 exports.updateTicket = function (req, res) {
 
-  var whereQuery  = {}, data = {}, options = {}, masterarray = [];
+  var whereQuery  = {}, data = {}, options = {}, masterArray = [];
   var ticketId = req.body.ticket_id, action;
-  var user_email = req.user.email || "Server";
+  var user_email = /*req.user.email ||*/ "Server"; // can be commented if we have users in DB
 
 
-  if ( !req.body.ticket_id )  return handleError(res, 'Ticket ticket_id Parameters missing');
+  if ( !req.body.ticket_id )  return Error.errorMissingParam(res, 'ticket_id');
 
   whereQuery['_id'] = ticketId;
 
@@ -77,7 +81,7 @@ exports.updateTicket = function (req, res) {
     return httpResponse.successResponse(res, masterArray);
   })
   .catch(function(error) {
-      return Errors.errorDB(res, error);
+      return Error.errorDB(res, error);
   })   
 };
 
@@ -90,12 +94,12 @@ exports.getTicket = function (req, res) {
   if (req.params.status) whereQuery['status'] = req.body.status;
  
 
-  TicketDM.getTickets(whereQuery, filterData, limit, skip, '-created_at').then(function(ticktsDetails) {
+  TicketDM.getTickets(whereQuery, filterData, LIMIT, skip, '-created_at').then(function(ticktsDetails) {
     return httpResponse.successResponse(res, ticktsDetails);
   })
   .catch(function(error) {
       console.log('This is error', error)
-      return Errors.errorDB(res, error);
+      return Error.errorDB(res, error);
   }) 
 }
 
@@ -103,11 +107,11 @@ exports.addComment = function (req, res) {
 
   var whereQuery  = {}, data = {}, options = {}, masterArray = [];
   var ticketId = req.body.ticket_id;
-  var user_email = req.user.email || "Server";
+  var user_email = /*req.user.email ||*/ "Server"; // can be commented if we have users in DB
 
 
-  if ( !req.body.ticket_id )  return handleError(res, 'Ticket ticket_id Parameters missing');
-  if ( !req.body.comment )  return handleError(res, 'Ticket ticket comment Parameters missing');
+  if ( !req.body.ticket_id )  return Error.errorMissingParam(res, 'ticket_id');
+  if ( !req.body.comment )  return Error.errorMissingParam(res, 'comment');
 
   whereQuery['_id'] = ticketId;
 
@@ -132,7 +136,7 @@ exports.addComment = function (req, res) {
   })
   .catch(function(error) {
       console.log('This is error', error)
-      return Errors.errorDB(res, error);
+      return Error.errorDB(res, error);
   })
 
 }

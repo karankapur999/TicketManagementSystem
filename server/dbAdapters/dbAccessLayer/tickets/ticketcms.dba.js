@@ -15,7 +15,7 @@ dao_functions.saveTickets = function(ticketData) {
 };
 
 dao_functions.getTickets = function(whereQuery, filterData, limit, skip, sort) {
-	return TicketModel.find(whereQuery, filterData).skip(skip).limit(limit).sort(sort).execAsync();	
+	return TicketModel.find(whereQuery, filterData).skip(skip).limit(limit).sort(sort).exec();	
 };
 
 dao_functions.updateTicket = function(whereQuery, data, options) {
