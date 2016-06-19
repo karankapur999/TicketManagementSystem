@@ -38,35 +38,29 @@ exports.updateTicket = function (req, res) {
 
   whereQuery['_id'] = ticketId;
 
-  data = { '$set': { status: req.body.status } };
 
   if (req.body.reschedule_ticket_time_value) { //Reshedule ticket block
-    data['is_rescheduled_ticket'] = true;
-    data['reschedule_ticket_time'] = req.body.reschedule_ticket_time;
-    data['status'] = "RESCHEDULED"
     action = "Ticket Rescheduled";
+    data = { '$set': {'is_rescheduled_ticket': true, 'reschedule_ticket_time':  req.body.reschedule_ticket_time, 'status': "RESCHEDULED"} };
   }
 
   else if (req.body.assign_to) {     //Reshedule ticket block
-    data['ticket_agent_email'] = req.body.assign_to;
-    data['status'] = "ASSIGNED"
-    data['ticket_assigned_by'] = "hghecdghhrfvhj";
+    data = { '$set': {'ticket_agent_email': req.body.assign_to, 'ticket_assigned_by':  user_email, 'status': "ASSIGNED"} };
     action = "Ticket Assingment";
   }
 
   else if (req.body.cancel_ticket) {     //Reshedule ticket block
-    data['ticket_agent_email'] = req.body.assign_to;
-    data['status'] = "CANCELLED"
-    data['ticket_cancelled_by'] = "hghecdghhrfvhj";
+ 
+    data = { '$set': {'ticket_cancelled_by':  user_email, 'status': "CANCELLED"} };
     action = "Ticket CANCELLED";
 
   }
 
    else if (req.body.priority_value) {     //Reshedule ticket block
-    data['priority'] = req.body.priority_value;
+    data = { '$set': {'priority':  req.body.priority_value } };
     action = "Ticket Priority change";
   }
-
+  console.log(data)
 
   data['$push'] = { 'history_log': {
                        'updated_by': user_email,
