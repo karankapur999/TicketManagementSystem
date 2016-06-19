@@ -2,6 +2,6 @@
 
 module.exports = {
   mongo: {
-    uri: 'mongodb://localhost/muffinapp-backend-main-dev'
+    uri: 'mongodb://localhost/CMS'
   }
 };

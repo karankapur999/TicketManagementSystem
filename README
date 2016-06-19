@@ -1,6 +1,8 @@
 How To run -:
 
-1.) Run npm install 
+
+1.) Run npm install .
+2.) Run mongo Server shell.
 2.) Run npm run start
 
 The server is running @ localhost:9000
