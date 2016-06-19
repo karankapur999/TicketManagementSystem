@@ -5,8 +5,10 @@ var config = require('./config/environment');
 module.exports = function (app) {
 
   // API
+  
   app.use('/api/v1/tickets', require('./api/tickets'));
-  // app.use('/api/v1/users', require('./api/user'));
+
+  app.use('/auth', require('./auth'));
 
   app.route('/:url(api|app|bower_components|assets)/*')
     .get(function (req, res) {

@@ -9,12 +9,10 @@ var httpResponse = require('../../responses');
 
 exports.createTicket = function (req, res) {
 
-  console.log('This is body', req.body)
-
   if ( !req.body.ticket_subject )  return handleError(res, 'Ticket ticket_subject Parameters missing');
   if ( !req.body.ticket_description )  return handleError(res, 'Ticket ticket_description Parameters missing');
   if ( !req.body.ticket_agent_email )  return handleError(res, 'Ticket ticket_agent_email Parameters missing');
-
+  req.body.ticket_created_by =   user_email;
   TicketDM.saveTickets(req.body).then(function(ticketObject) {
     return httpResponse.successResponse(res, ticketObject);
   })
@@ -29,6 +27,8 @@ exports.updateTicket = function (req, res) {
 
   var whereQuery  = {}, data = {}, options = {}, masterarray = [];
   var ticketId = req.body.ticket_id, action;
+  var user_email = req.user.email || "Server";
+
 
   if ( !req.body.ticket_id )  return handleError(res, 'Ticket ticket_id Parameters missing');
 
@@ -65,7 +65,7 @@ exports.updateTicket = function (req, res) {
 
 
   data['$push'] = { 'history_log': {
-                       'updated_by': "testing",
+                       'updated_by': user_email,
                        'updated_at': new Date(),
                        'action': action
                     } 
@@ -103,6 +103,8 @@ exports.addComment = function (req, res) {
 
   var whereQuery  = {}, data = {}, options = {}, masterArray = [];
   var ticketId = req.body.ticket_id;
+  var user_email = req.user.email || "Server";
+
 
   if ( !req.body.ticket_id )  return handleError(res, 'Ticket ticket_id Parameters missing');
   if ( !req.body.comment )  return handleError(res, 'Ticket ticket comment Parameters missing');
@@ -110,7 +112,7 @@ exports.addComment = function (req, res) {
   whereQuery['_id'] = ticketId;
 
   data['$push'] = {  'history_log': {
-                       'updated_by': "testing",
+                       'updated_by': user_email,
                        'updated_at': new Date(),
                        'action': 'comment addition'
                       },
